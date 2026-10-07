@@ -41,8 +41,9 @@ rm -f "${XDG_RUNTIME_DIR}/${DISPLAY_NAME}" "${XDG_RUNTIME_DIR}/${DISPLAY_NAME}.l
 # 1. Generate Sway config
 cat << EOF > "$CONF_FILE"
 output HEADLESS-1 resolution ${RESOLUTION}
-xwayland disable
+xwayland enable
 seat * hide_cursor 1000
+exec bash -c 'echo "\$DISPLAY" > "${LOG_DIR}/x11_display"'
 EOF
 
 echo "==> 1. Launching Sway Headless on ${DISPLAY_NAME} (${RESOLUTION})..."
@@ -62,6 +63,19 @@ if [[ ! -S "${XDG_RUNTIME_DIR}/${DISPLAY_NAME}" ]]; then
     exit 1
 fi
 echo "==> Sway Headless socket ready: ${XDG_RUNTIME_DIR}/${DISPLAY_NAME}"
+
+# Wait for Xwayland DISPLAY file
+X11_DISP=""
+for i in {1..20}; do
+    if [[ -f "${LOG_DIR}/x11_display" && -s "${LOG_DIR}/x11_display" ]]; then
+        X11_DISP="$(cat "${LOG_DIR}/x11_display")"
+        break
+    fi
+    sleep 0.1
+done
+if [[ -n "$X11_DISP" ]]; then
+    echo "==> Sway Xwayland isolated display ready: ${X11_DISP}"
+fi
 
 # 2. Setup persistent wl-inject FIFO
 mkfifo "$FIFO_FILE"
@@ -92,7 +106,7 @@ fi
 ENV_FILE="${LOG_DIR}/env.sh"
 cat << EOF > "$ENV_FILE"
 export WAYLAND_DISPLAY="${DISPLAY_NAME}"
-unset DISPLAY
+$(if [[ -n "$X11_DISP" ]]; then echo "export DISPLAY=\"${X11_DISP}\""; fi)
 export FIFO_INJECT="${FIFO_FILE}"
 inject() {
     echo "\$@" > "${FIFO_FILE}"
@@ -106,8 +120,8 @@ echo "    Source it with: source ${ENV_FILE}"
 
 # 4. If command passed as argument, execute it
 if [[ $# -gt 0 ]]; then
-    echo "==> 3. Executing target app on ${DISPLAY_NAME}: $@"
-    env -u DISPLAY WAYLAND_DISPLAY="${DISPLAY_NAME}" "$@" &
+    echo "==> 3. Executing target app on ${DISPLAY_NAME} (X11: ${X11_DISP:-none}): $@"
+    env WAYLAND_DISPLAY="${DISPLAY_NAME}" DISPLAY="${X11_DISP:-}" "$@" &
     APP_PID=$!
     wait "$APP_PID"
 else
