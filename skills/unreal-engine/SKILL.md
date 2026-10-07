@@ -62,7 +62,28 @@ The official Unreal Engine MCP server listens on `http://127.0.0.1:8000/mcp`.
 
 ---
 
-## 4. Nanite Procedural Mesh Building Checklist
+## 4. Visual Verification & Viewport Photography Runbook (Live MCP)
+
+When the Unreal Engine Editor is active with `unreal-mcp`, AI assistants can actively navigate in-game and inspect rendering quality visually (terrain relief, lighting, Nanite clusters, atmosphere, shadows):
+
+### Direct Visual Verification Protocol
+1. **Launch & Simulation** :
+   - Launch editor if closed: `run_command` with `IsDaemon: true`.
+   - Start PIE: `EditorToolset.EditorAppToolset.StartPIE` with `{ "options": { "bSimulate": false, "WarmupSeconds": 2.0 } }`.
+2. **Navigate Pawn or Camera** :
+   - Center on actor: `EditorToolset.EditorAppToolset.FocusOnActors` with `{ "actors": [{ "refPath": "<Path>" }] }`.
+   - Set editor camera: `EditorToolset.EditorAppToolset.SetCameraTransform` with `{ "transform": { "location": {x,y,z}, "rotation": {pitch,yaw,roll}, "scale": {1,1,1} } }`.
+   - Move live player pawn: `editor_toolset.toolsets.actor.ActorTools.set_actor_transform` with `actor: { "refPath": "<PawnPath>" }`, `worldspace: true`, and `xform: { "location": {x,y,z}, "rotation": {pitch,yaw,roll}, "scale": {1,1,1} }`.
+3. **Instant Viewport Capture** :
+   - Call `EditorToolset.EditorAppToolset.CaptureEditorImage` with `{}` (returns base64-encoded PNG directly in the response).
+   - Alternatively run `HighResShot 1920x1080` to write to `Saved/Screenshots/LinuxEditor/`.
+4. **Multimodal Visual Inspection** :
+   - Decode base64 PNG and call `view_file` on the resulting `.png` file.
+   - Antigravity natively parses and views the image to verify Lumen GI, Virtual Shadow Maps, procedural terrain continuity, and biomes.
+
+---
+
+## 5. Nanite Procedural Mesh Building Checklist
 
 When generating procedural geometry with Nanite enabled:
 1. **Modules Required** (`Build.cs`) : `"MeshDescription"`, `"StaticMeshDescription"`.

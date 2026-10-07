@@ -42,6 +42,12 @@ When connected to an Unreal Engine MCP server (e.g. `unreal-mcp`):
   - `ServerName: "unreal-mcp"`
   - `ToolName: "call_tool"`
   - `Arguments: { "toolset_name": "<Toolset>", "tool_name": "<Function>", "arguments": { ... } }`
+- **In-Game Photography & Visual Validation** :
+  - Mathematical and unit tests verify logic, but computer graphics, procedural generation, and shaders require visual inspection.
+  - Start PIE: `EditorToolset.EditorAppToolset.StartPIE` (`options: { bSimulate: false, WarmupSeconds: 2.0 }`).
+  - Reposition camera/pawn: `editor_toolset.toolsets.actor.ActorTools.set_actor_transform` with `xform: { location, rotation, scale }`.
+  - Capture instant image: `EditorToolset.EditorAppToolset.CaptureEditorImage` (returns base64 PNG).
+  - Inspect visually: decode base64 PNG and call `view_file` to inspect lighting (Lumen), shadows (VSM), terrain continuity, and biomes.
 
 ---
 
