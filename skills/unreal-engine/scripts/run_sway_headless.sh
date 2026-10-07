@@ -84,12 +84,24 @@ HOLDER_PID=$!
 
 WL_INJECT_BIN="${WL_INJECT_BIN:-}"
 if [[ -z "$WL_INJECT_BIN" ]]; then
-    if [[ -x "$HOME/.cargo/bin/wl-inject" ]]; then
-        WL_INJECT_BIN="$HOME/.cargo/bin/wl-inject"
-    elif [[ -x "$HOME/Documents/wl-inject/target/release/wl-inject" ]]; then
-        WL_INJECT_BIN="$HOME/Documents/wl-inject/target/release/wl-inject"
-    else
-        WL_INJECT_BIN="$(which wl-inject 2>/dev/null || true)"
+    # 1. Prioritize Nix dev env / system PATH binary if up-to-date (v0.2.0+)
+    PATH_BIN="$(which wl-inject 2>/dev/null || true)"
+    if [[ -n "$PATH_BIN" && -x "$PATH_BIN" ]]; then
+        BIN_VER="$("$PATH_BIN" --version 2>/dev/null | awk '{print $2}' || true)"
+        if [[ -n "$BIN_VER" ]]; then
+            WL_INJECT_BIN="$PATH_BIN"
+        fi
+    fi
+
+    # 2. Fall back to local cargo or repository build while Nix package is updating
+    if [[ -z "$WL_INJECT_BIN" ]]; then
+        if [[ -x "$HOME/.cargo/bin/wl-inject" ]]; then
+            WL_INJECT_BIN="$HOME/.cargo/bin/wl-inject"
+        elif [[ -x "$HOME/Documents/wl-inject/target/release/wl-inject" ]]; then
+            WL_INJECT_BIN="$HOME/Documents/wl-inject/target/release/wl-inject"
+        elif [[ -n "$PATH_BIN" && -x "$PATH_BIN" ]]; then
+            WL_INJECT_BIN="$PATH_BIN"
+        fi
     fi
 fi
 
