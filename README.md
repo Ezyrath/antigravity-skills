@@ -25,7 +25,14 @@ This toolkit turns Antigravity into a specialized pair programmer for **Unreal E
 - **Multi-Repo Synchronization**: Step-by-step protocol for submodules and host repositories.
 - **Clean Commits**: Rules and exclusions for intermediate build folders and temporary caches.
 
-### 3. Universal Rules (`rules/AGENTS.md`)
+### 3. `vue-spacetimedb-webapp` (Skill)
+- **Modern Full-Stack Architecture**: Vue 3 `<script setup lang="ts">`, Vuetify 3/4 semantic tokens, Pinia Setup Stores, and SpacetimeDB real-time WebSockets backend.
+- **The "No-Mock" Testing Philosophy**: Fast Vitest unit/integration testing combined with live-backend Cypress E2E tests featuring direct database CLI auditing (`cy.task('spacetimeSql')`) and clean console enforcement.
+- **Edge & Blob Storage**: Cloudflare Workers + R2 integration with Zero-Trust internal authorization callbacks to SpacetimeDB HTTP handlers.
+- **Helper Scripts**:
+  - `scripts/validate_webapp.sh`: Universal validation pipeline running TypeScript check (`vue-tsc`), linting (`eslint`), unit tests (`vitest`), and optional E2E suites.
+
+### 4. Universal Rules (`rules/AGENTS.md`)
 - Modern C++ standards for Unreal Engine (`UObject`, `AActor`, `TObjectPtr`, IWYU).
 - Large World Coordinates (LWC 64-bit precision).
 - Asynchronous multithreading (`TaskGraph`, `ParallelFor`).
