@@ -51,7 +51,17 @@ When connected to an Unreal Engine MCP server (e.g. `unreal-mcp`):
 
 ---
 
-## 4. Nanite & Procedural Mesh Building (`FMeshDescription`)
+## 4. Visual Headless Execution with Sway & wl-inject
+
+- When running the Unreal Engine Editor or graphical tests without disrupting the user's active desktop:
+  - **Never use `Xvfb`** (lacks DRI3, causing `vkCreateSwapchainKHR` crashes) or `weston-headless` (lacks real DRM/GBM swapchains, triggering `VK_ERROR_SURFACE_LOST_KHR`).
+  - **Use Headless Sway** via `run_sway_headless.sh` (`WLR_BACKENDS=headless WLR_LIBINPUT_NO_DEVICES=1` on an isolated display socket e.g. `wayland-1`). This utilizes the real DRM render node (`/dev/dri/renderD128`) via wlroots, granting full hardware-accelerated Vulkan (Lumen, Nanite, VSM) at native GPU speed.
+  - **Input Automation with `wl-inject`** : Drive editor viewport navigation and player pawns by piping commands (`press`, `release`, `drag`, `tap`, `type`) into `/tmp/wl-inject-<display>.fifo`.
+  - **Visual Capture** : Capture frames via `grim` or MCP `CaptureEditorImage` and inspect visually using `view_file`.
+
+---
+
+## 5. Nanite & Procedural Mesh Building (`FMeshDescription`)
 
 When constructing static meshes dynamically with Nanite enabled:
 - **Required Modules** in `Build.cs` : `"MeshDescription"` and `"StaticMeshDescription"`.
@@ -61,7 +71,7 @@ When constructing static meshes dynamically with Nanite enabled:
 
 ---
 
-## 5. Git Commit Signatures
+## 6. Git Commit Signatures
 
 - Commits must always be signed with GPG (`git commit -S`).
 - Passphrase caching should be managed via `gpg-agent` / system keyring (e.g. KDE Wallet) for seamless non-interactive signing.

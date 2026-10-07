@@ -83,7 +83,54 @@ When the Unreal Engine Editor is active with `unreal-mcp`, AI assistants can act
 
 ---
 
-## 5. Nanite Procedural Mesh Building Checklist
+## 5. Visual Headless Execution with Sway & wl-inject (Zero-Intrusion Hardware Rendering)
+
+Running Unreal Engine Editor with full graphics (Vulkan RHI, Nanite, Lumen, VSM) normally opens desktop windows that disrupt the user's active workspace. Conversely, `-nullrhi` disables the GPU pipeline completely, preventing visual validation.
+
+Standard headless X11 / Wayland servers fail for modern Vulkan:
+- **`Xvfb`** lacks DRI3, causing `vkCreateSwapchainKHR` crashes.
+- **`weston-headless`** lacks a real DRM/GBM swapchain, yielding `VK_ERROR_SURFACE_LOST_KHR`.
+
+### The Solution: Headless Sway (`wlroots`) + `wl-inject`
+Sway running with `WLR_BACKENDS=headless WLR_LIBINPUT_NO_DEVICES=1` utilizes the hardware DRM render node (`/dev/dri/renderD128`) via GBM/wlroots. Unreal Engine renders at native GPU speed onto a virtual display (`HEADLESS-1`, e.g. 1920x1080) with zero visual disruption on the host desktop.
+
+Furthermore, Sway exposes wlroots virtual input protocols (`zwlr_virtual_pointer_manager_v1` and `zwp_virtual_keyboard_manager_v1`), which `wl-inject` leverages to drive the editor and in-game pawns.
+
+### Script Helper: `scripts/run_sway_headless.sh`
+Launch any graphical application (Unreal Editor, tests, tools) inside an isolated headless Sway session:
+```bash
+./scripts/run_sway_headless.sh "$UNREAL_INSTALL_DIR/Engine/Binaries/Linux/UnrealEditor" "$PWD/<ProjectName>.uproject" -log
+```
+
+The script automatically:
+1. Spawns headless Sway on an isolated display socket (`wayland-1` by default).
+2. Sets up a persistent FIFO at `/tmp/wl-inject-wayland-1.fifo` backed by `wl-inject`.
+3. Exports a helper environment at `/tmp/sway-headless-wayland-1/env.sh` with `inject()` and `screenshot()` functions.
+
+### Interacting with the Headless Session
+From any terminal or background task:
+```bash
+source /tmp/sway-headless-wayland-1/env.sh
+
+# Inject keyboard shortcuts and text:
+inject "tap f8 100"                 # Eject / Possess in PIE
+inject "tap tilde 50"              # Open developer console
+inject "type stat fps"             # Type console command
+inject "tap enter 50"              # Submit command
+
+# Navigate 3D camera / Pawn:
+inject "press w"                   # Start flying forward
+sleep 1
+inject "release w"                 # Stop flying
+inject "drag 300 0 right 15 10"    # Smooth mouse drag with right-click held (rotate camera)
+
+# Capture virtual screen:
+screenshot /tmp/view.png
+```
+
+---
+
+## 6. Nanite Procedural Mesh Building Checklist
 
 When generating procedural geometry with Nanite enabled:
 1. **Modules Required** (`Build.cs`) : `"MeshDescription"`, `"StaticMeshDescription"`.
@@ -93,9 +140,11 @@ When generating procedural geometry with Nanite enabled:
 
 ---
 
-## 5. Bundled Scripts & References
+## 7. Bundled Scripts & References
 
 - Build script: [scripts/build.sh](./scripts/build.sh)
 - Headless test runner: [scripts/run_headless_tests.sh](./scripts/run_headless_tests.sh)
+- Sway Headless runner: [scripts/run_sway_headless.sh](./scripts/run_sway_headless.sh)
 - Nanite procedural reference: [references/nanite_architecture.md](./references/nanite_architecture.md)
 - Unreal MCP reference: [references/unreal_mcp_guide.md](./references/unreal_mcp_guide.md)
+
