@@ -29,8 +29,20 @@ cd "$PROJECT_DIR"
 if [[ -f "Makefile" ]]; then
   make "$TARGET"
 else
-  UNREAL_DIR="${UNREAL_INSTALL_DIR:-$HOME/.local/share/unreal-engine/16d75d84714512edfb744e1fd0a59e9c74d57873}"
-  "$UNREAL_DIR/Engine/Build/BatchFiles/RunUBT.sh" "${PROJECT_NAME}Editor" Linux Development -Project="$UPROJECT"
+  if [[ -z "${UNREAL_INSTALL_DIR:-}" ]]; then
+    if [[ -d "$HOME/.local/share/unreal-engine" ]]; then
+      UNREAL_INSTALL_DIR="$(find "$HOME/.local/share/unreal-engine" -maxdepth 1 -mindepth 1 -type d 2>/dev/null | head -n 1)"
+    elif [[ -d "/opt/unreal-engine" ]]; then
+      UNREAL_INSTALL_DIR="/opt/unreal-engine"
+    fi
+  fi
+
+  if [[ -z "${UNREAL_INSTALL_DIR:-}" || ! -d "$UNREAL_INSTALL_DIR" ]]; then
+    echo "Error: Unreal Engine install directory not found. Please set UNREAL_INSTALL_DIR." >&2
+    exit 1
+  fi
+
+  "$UNREAL_INSTALL_DIR/Engine/Build/BatchFiles/RunUBT.sh" "${PROJECT_NAME}Editor" Linux Development -Project="$UPROJECT"
 fi
 
 echo "==> Build succeeded!"
