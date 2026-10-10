@@ -20,19 +20,29 @@ This toolkit turns Antigravity into a specialized pair programmer for **Unreal E
   - `scripts/build.sh`: Automatically detects `.uproject` and builds the target.
   - `scripts/run_headless_tests.sh`: Runs automated test queues headlessly.
 
-### 2. `git-gpg-workflow` (Skill)
+### 2. `blender` (Skill)
+- **Blender MCP Architecture**: Non-blocking TCP bridge server (`localhost:9876`) + stdio MCP server (`blender-mcp`).
+- **Scene Inspection & Navigation**: Tools for collection hierarchy (`get_objects_summary`), datablock health, and viewport framing.
+- **Python Automation (`bpy`)**: Automated 3D modeling, modifier setups, and procedural geometry via `bmesh`.
+- **Multimodal Visual Inspection**: In-session viewport captures (`render_viewport_to_path`) and thumbnail renders.
+- **Unreal Engine 5 Asset Pipeline**: Automated FBX export with coordinate alignment and `UCX` collision hulls.
+- **Helper Scripts**:
+  - `scripts/test_blender_connection.py`: Live socket health check and scene metrics reporter.
+  - `scripts/export_to_unreal.py`: Automated asset and collision exporter for UE5.
+
+### 3. `git-gpg-workflow` (Skill)
 - **GPG Commit Signing**: Enforces `git commit -S` with KDE Wallet / `gpg-agent` non-interactive caching.
 - **Multi-Repo Synchronization**: Step-by-step protocol for submodules and host repositories.
 - **Clean Commits**: Rules and exclusions for intermediate build folders and temporary caches.
 
-### 3. `vue-spacetimedb-webapp` (Skill)
+### 4. `vue-spacetimedb-webapp` (Skill)
 - **Modern Full-Stack Architecture**: Vue 3 `<script setup lang="ts">`, Vuetify 3/4 semantic tokens, Pinia Setup Stores, and SpacetimeDB real-time WebSockets backend.
 - **The "No-Mock" Testing Philosophy**: Fast Vitest unit/integration testing combined with live-backend Cypress E2E tests featuring direct database CLI auditing (`cy.task('spacetimeSql')`) and clean console enforcement.
 - **Edge & Blob Storage**: Cloudflare Workers + R2 integration with Zero-Trust internal authorization callbacks to SpacetimeDB HTTP handlers.
 - **Helper Scripts**:
   - `scripts/validate_webapp.sh`: Universal validation pipeline running TypeScript check (`vue-tsc`), linting (`eslint`), unit tests (`vitest`), and optional E2E suites.
 
-### 4. Universal Rules (`rules/AGENTS.md`)
+### 5. Universal Rules (`rules/AGENTS.md`)
 - Modern C++ standards for Unreal Engine (`UObject`, `AActor`, `TObjectPtr`, IWYU).
 - Large World Coordinates (LWC 64-bit precision).
 - Asynchronous multithreading (`TaskGraph`, `ParallelFor`).
