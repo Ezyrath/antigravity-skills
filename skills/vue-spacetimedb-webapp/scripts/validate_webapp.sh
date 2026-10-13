@@ -32,19 +32,28 @@ log_error() {
     echo -e "${C_RED}${C_BOLD}[FAIL]${C_RESET} $1" >&2
 }
 
-PROJECT_DIR="${1:-$PWD}"
-RUN_E2E=false
+PROJECT_DIR="$PWD"
+RUN_E2E=true
 
 for arg in "$@"; do
     case "$arg" in
         --e2e)
             RUN_E2E=true
             ;;
+        --skip-e2e)
+            RUN_E2E=false
+            ;;
         --help|-h)
-            echo "Usage: $0 [PROJECT_DIR] [--e2e]"
+            echo "Usage: $0 [PROJECT_DIR] [--skip-e2e]"
             echo "  PROJECT_DIR : Root directory of the web application (default: current directory)"
-            echo "  --e2e       : Also run Cypress End-to-End tests"
+            echo "  --skip-e2e  : Skip Cypress End-to-End tests (enabled by default)"
             exit 0
+            ;;
+        -*)
+            log_warn "Unknown flag: $arg"
+            ;;
+        *)
+            PROJECT_DIR="$arg"
             ;;
     esac
 done
@@ -57,6 +66,13 @@ if [[ ! -f "package.json" ]]; then
 fi
 
 log_info "Starting validation for $(basename "$PWD")..."
+
+# 0. SpacetimeDB Rust Backend Unit Tests
+if [[ -f "spacetimedb/Cargo.toml" ]] && command -v cargo &>/dev/null; then
+    log_info "Running SpacetimeDB Rust unit tests (cargo test --manifest-path spacetimedb/Cargo.toml)..."
+    cargo test --manifest-path spacetimedb/Cargo.toml
+    log_success "SpacetimeDB Rust unit tests passed."
+fi
 
 # 1. Type Checking
 if grep -q '"type-check"' package.json; then

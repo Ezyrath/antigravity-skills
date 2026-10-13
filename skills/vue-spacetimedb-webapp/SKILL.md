@@ -82,16 +82,26 @@ This skill provides architectural guidelines, best practices, and operational ru
 
 ---
 
-## 4. The "No-Mock" Testing Philosophy
+## 4. The "No-Mock" Testing Philosophy & Mandatory Verification Gate
 
 Reliability comes from testing real systems together rather than testing mock assumptions.
 
-### Level 1: Fast Unit & Integration Testing (Vitest)
-- Test utilities, service logic, Pinia store state calculations, and i18n dictionaries.
-- Command: `npm run test` or `npx vitest run`.
+> **MANDATORY PRE-COMPLETION GATE (ZERO EXCEPTIONS)** :
+> Whenever you modify **any** UI component, page, route, Pinia store, locale dictionary, Cloudflare Worker, or SpacetimeDB Rust backend, you **MUST** proactively run the **entire** verification pipeline — **including `npm run test:e2e:all` (Cypress E2E)** — **BEFORE** declaring the task complete or summarizing results to the user. **Never** wait for the user to ask if Cypress passes.
+>
+> Required execution sequence before finishing:
+> 1. `cargo test --manifest-path spacetimedb/Cargo.toml` (if `spacetimedb/` exists)
+> 2. `npm run type-check` (`vue-tsc --noEmit`)
+> 3. `npm run lint` (or `npm run lint:fix`)
+> 4. `npm run test` (Vitest unit & integration suites)
+> 5. `npm run test:e2e:all` (Full Cypress E2E headless suite against live SpacetimeDB + OIDC + Worker R2 + Vite)
 
-### Level 2: End-to-End Real Backend Testing (Cypress)
-- **Zero Mock Policy** : Run Cypress against **live local services** :
+### Level 1: Fast Unit & Integration Testing (Vitest & Cargo)
+- Test utilities, service logic, Pinia store state calculations, i18n dictionaries, and SpacetimeDB Rust reducers.
+- Commands: `cargo test --manifest-path spacetimedb/Cargo.toml` and `npm run test`.
+
+### Level 2: End-to-End Real Backend Testing (Cypress — Mandatory)
+- **Zero Mock Policy** : Run Cypress (`npm run test:e2e:all`) against **live local services** :
   1. SpacetimeDB running locally in-memory (`spacetime start --in-memory`).
   2. Local Dev OIDC / auth emulator.
   3. Local Cloudflare Worker / Miniflare R2 emulator (`wrangler dev`).
@@ -113,7 +123,7 @@ Reliability comes from testing real systems together rather than testing mock as
 | `npm run lint` / `npm run lint:fix` | Runs ESLint and auto-formats code according to project rules. |
 | `npm run test` | Executes Vitest unit and integration test suite. |
 | `npm run test:e2e` / `cypress:run` | Runs full Cypress E2E suite headlessly against the live local backend. |
-| `npm run test:e2e:all` | Automatically boots all background services, runs Cypress, and tears down. |
+| `npm run test:e2e:all` | **Mandatory E2E gate**: boots all background services, runs Cypress, and tears down. |
 | `npm run spacetime:start` | Boots local in-memory SpacetimeDB instance. |
 | `npm run spacetime:dev` | Watches SpacetimeDB Rust module, auto-rebuilds and generates TS bindings. |
 | `npm run spacetime:generate` | Manually regenerates TypeScript module bindings into `src/module_bindings/`. |
@@ -125,4 +135,4 @@ Reliability comes from testing real systems together rather than testing mock as
 
 - Check out [spacetimedb_patterns.md](references/spacetimedb_patterns.md) for subscription lifecycles, RLS views, and HTTP handlers.
 - Check out [real_backend_testing.md](references/real_backend_testing.md) for Cypress database auditing tasks and service orchestration.
-- Use `scripts/validate_webapp.sh` to run the complete validation pipeline (`type-check`, `lint`, and `test`) in one command.
+- Use `scripts/validate_webapp.sh` to run the complete validation pipeline (`cargo test`, `type-check`, `lint`, `test`, and `test:e2e:all` by default) in one command.
