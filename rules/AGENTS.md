@@ -71,7 +71,8 @@ When constructing static meshes dynamically with Nanite enabled:
 
 ---
 
-## 6. Git Commit Signatures
+## 6. Git Commit Signatures & SSH Agent (Proton Pass)
 
 - Commits must always be signed with GPG (`git commit -S`).
 - Passphrase caching should be managed via `gpg-agent` / system keyring (e.g. KDE Wallet) for seamless non-interactive signing.
+- SSH authentication is managed by the **Proton Pass SSH Agent** (`~/.ssh/proton-pass-ssh-agent.sock`). If `git push`/`fetch` fails with `Permission denied (publickey)`, Proton Pass is not launched or unlocked — ask the user to start/unlock Proton Pass instead of bypassing SSH.

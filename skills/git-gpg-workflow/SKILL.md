@@ -31,6 +31,11 @@ To ensure commits are signed without interactive prompt interruptions:
 - Store the GPG key passphrase securely in the system keyring (e.g. KDE Wallet).
 - Once unlocked, `git commit -S` signs commits transparently and automatically.
 
+### SSH Authentication via Proton Pass
+SSH keys for Git operations (`git push`, `git fetch`, `git pull`) are served by the **Proton Pass SSH Agent** (`SSH_AUTH_SOCK=~/.ssh/proton-pass-ssh-agent.sock`):
+- If a Git SSH operation fails with `Permission denied (publickey)` or `ssh-add -l` reports `Error connecting to agent: No such file or directory`, **Proton Pass is not running or is locked**.
+- Do **not** switch the Git remote protocol to HTTPS or override credentials; simply ask the user to launch/unlock Proton Pass and retry once ready.
+
 ---
 
 ## 2. Multi-Repo & Submodule Commit Protocol
