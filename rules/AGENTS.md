@@ -76,3 +76,18 @@ When constructing static meshes dynamically with Nanite enabled:
 - Commits must always be signed with GPG (`git commit -S`).
 - Passphrase caching should be managed via `gpg-agent` / system keyring (e.g. KDE Wallet) for seamless non-interactive signing.
 - SSH authentication is managed by the **Proton Pass SSH Agent** (`~/.ssh/proton-pass-ssh-agent.sock`). If `git push`/`fetch` fails with `Permission denied (publickey)`, Proton Pass is not launched or unlocked — ask the user to start/unlock Proton Pass instead of bypassing SSH.
+
+---
+
+## 7. Rust, Bevy ECS & WebAssembly Modding Architecture
+
+1. **Workspace Feature Hygiene**:
+   - Keep `bevy` in `[workspace.dependencies]` restricted to `default-features = false, features = ["default_app"]` so simulation crates and headless dedicated servers compile without GPU/windowing overhead.
+   - Enable `features = ["3d", "ui"]` exclusively in the graphical client crate.
+2. **Everything is a Mod (WebAssembly First)**:
+   - When building moddable simulations (e.g. *Project Voidlore*), the engine host must remain content-agnostic. Core gameplay definitions (voxel blocks, biomes, NPC behaviors, colony rules, emergent narrative events) belong in WebAssembly mods (`wasm32-unknown-unknown`) loaded via `wasmtime`.
+3. **64-bit Hierarchical Spatial Coordinates**:
+   - Use 64-bit math (`glam::DVec3` and hierarchical IDs: `GalaxyId` -> `SectorCoord` -> `StarSystemId` -> `PlanetId`) for simulation coordinates, converting to camera-relative single-precision `Vec3` only for Bevy `Transform` rendering.
+4. **Unified Self-Hosted Topologies**:
+   - Support `SoloEmbedded` (local server inside client), `ListenServer`, and headless `DedicatedServer` (`MinimalPlugins` + `ScheduleRunnerPlugin`) through a single shared network protocol.
+

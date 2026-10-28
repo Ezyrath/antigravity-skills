@@ -42,10 +42,19 @@ This toolkit turns Antigravity into a specialized pair programmer for **Unreal E
 - **Helper Scripts**:
   - `scripts/validate_webapp.sh`: Universal validation pipeline running TypeScript check (`vue-tsc`), linting (`eslint`), unit tests (`vitest`), and optional E2E suites.
 
-### 5. Universal Rules (`rules/AGENTS.md`)
+### 5. `bevy` (Skill)
+- **Modular Cargo Workspace**: Feature separation (`default_app` for simulation/headless server vs `3d`/`ui` for graphical client) and fast dev optimization profiles.
+- **Procedural 3D & Voxel Meshing**: Face-culled and greedy meshing patterns for `bevy::mesh::Mesh` and `AsyncComputeTaskPool`.
+- **WebAssembly Modding ("Base Game as a Mod")**: Guest SDK (`wasm32-unknown-unknown`) and sandboxed `Wasmtime` host plugin patterns.
+- **Unified Self-Hosted Networking**: Singleplayer embedded server (`SoloEmbedded`), `ListenServer`, and headless `DedicatedServer` smoke-testing (`--smoke-test`).
+- **Helper Scripts**:
+  - `scripts/validate_bevy_workspace.sh`: Compiles `.wasm` mods, checks the Cargo workspace, runs unit tests, and executes the headless server smoke test.
+
+### 6. Universal Rules (`rules/AGENTS.md`)
 - Modern C++ standards for Unreal Engine (`UObject`, `AActor`, `TObjectPtr`, IWYU).
-- Large World Coordinates (LWC 64-bit precision).
-- Asynchronous multithreading (`TaskGraph`, `ParallelFor`).
+- Rust, Bevy ECS & WebAssembly Modding guidelines.
+- Large World Coordinates (LWC 64-bit precision & hierarchical reference frames).
+- Asynchronous multithreading (`TaskGraph`, `ParallelFor`, `AsyncComputeTaskPool`).
 
 ---
 
