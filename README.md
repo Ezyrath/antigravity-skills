@@ -50,11 +50,17 @@ This toolkit turns Antigravity into a specialized pair programmer for **Unreal E
 - **Helper Scripts**:
   - `scripts/validate_bevy_workspace.sh`: Compiles `.wasm` mods, checks the Cargo workspace, runs unit tests, and executes the headless server smoke test.
 
-### 6. Universal Rules (`rules/AGENTS.md`)
+### 6. `linux-root-bridge` (Skill)
+- **NixOS FHS (`buildFHSEnv` / `bwrap`) Privilege Bridge**: Multi-threaded Unix domain socket bridge (`/run/user/<uid>/agy-root-bridge.sock`, mode `0600`) allowing Antigravity to run privileged host commands (`dmesg`, `smartctl`, raw SCSI `SG_IO`, `ddrescue`, `nixos-rebuild`) with real-time audit logging in the user's host terminal.
+- **Helper Scripts**:
+  - `scripts/root_bridge.py`: Server & client CLI (`--timeout`, `--cwd`, `--exec`).
+
+### 7. Universal Rules (`rules/AGENTS.md`)
 - Modern C++ standards for Unreal Engine (`UObject`, `AActor`, `TObjectPtr`, IWYU).
 - Rust, Bevy ECS & WebAssembly Modding guidelines.
 - Large World Coordinates (LWC 64-bit precision & hierarchical reference frames).
 - Asynchronous multithreading (`TaskGraph`, `ParallelFor`, `AsyncComputeTaskPool`).
+- NixOS FHS sandbox & Host Root Bridge workflow.
 
 ---
 

@@ -91,3 +91,14 @@ When constructing static meshes dynamically with Nanite enabled:
 4. **Unified Self-Hosted Topologies**:
    - Support `SoloEmbedded` (local server inside client), `ListenServer`, and headless `DedicatedServer` (`MinimalPlugins` + `ScheduleRunnerPlugin`) through a single shared network protocol.
 
+---
+
+## 8. NixOS FHS Sandbox & Host Root Bridge (`root_bridge.py`)
+
+When running inside a NixOS `buildFHSEnv` (`bwrap`) user namespace where `sudo`/`pkexec` cannot elevate privileges (`PR_SET_NO_NEW_PRIVS`) and device nodes appear as `nobody:nogroup`:
+- **Never waste steps writing ad-hoc privilege-escalation scripts**. Use the bundled `linux-root-bridge` skill script directly.
+- Ask the user to launch the bridge in a host terminal:
+  `sudo python3 ~/.gemini/config/plugins/antigravity-skills/skills/linux-root-bridge/scripts/root_bridge.py`
+- Execute root commands transparently via the Unix socket (`/run/user/<uid>/agy-root-bridge.sock`):
+  `python3 ~/.gemini/config/plugins/antigravity-skills/skills/linux-root-bridge/scripts/root_bridge.py --timeout 60 --exec "<command>"`
+
