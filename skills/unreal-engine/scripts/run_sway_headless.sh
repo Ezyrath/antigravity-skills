@@ -6,7 +6,12 @@
 # ====================================================================
 set -euo pipefail
 
-DISPLAY_NAME="${SWAY_HEADLESS_DISPLAY:-wayland-1}"
+HOST_WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-}"
+DISPLAY_NAME="${SWAY_HEADLESS_DISPLAY:-wayland-headless}"
+if [[ "$DISPLAY_NAME" == "$HOST_WAYLAND_DISPLAY" || "$DISPLAY_NAME" == "wayland-0" || "$DISPLAY_NAME" == "wayland-1" ]]; then
+    echo "WARNING: SWAY_HEADLESS_DISPLAY ('${DISPLAY_NAME}') conflicts with host Wayland socket ('${HOST_WAYLAND_DISPLAY}'). Switching to 'wayland-headless'." >&2
+    DISPLAY_NAME="wayland-headless"
+fi
 RESOLUTION="${SWAY_HEADLESS_RES:-1920x1080}"
 CONF_FILE="/tmp/sway-headless-${DISPLAY_NAME}.conf"
 FIFO_FILE="/tmp/wl-inject-${DISPLAY_NAME}.fifo"

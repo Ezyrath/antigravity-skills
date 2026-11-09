@@ -103,14 +103,14 @@ Launch any graphical application (Unreal Editor, tests, tools) inside an isolate
 ```
 
 The script automatically:
-1. Spawns headless Sway on an isolated display socket (`wayland-1` by default).
-2. Sets up a persistent FIFO at `/tmp/wl-inject-wayland-1.fifo` backed by `wl-inject`.
-3. Exports a helper environment at `/tmp/sway-headless-wayland-1/env.sh` with `inject()` and `screenshot()` functions.
+1. Spawns headless Sway on an isolated display socket (`wayland-headless` by default).
+2. Sets up a persistent FIFO at `/tmp/wl-inject-wayland-headless.fifo` backed by `wl-inject`.
+3. Exports a helper environment at `/tmp/sway-headless-wayland-headless/env.sh` with `inject()` and `screenshot()` functions.
 
 ### Interacting with the Headless Session
 From any terminal or background task:
 ```bash
-source /tmp/sway-headless-wayland-1/env.sh
+source /tmp/sway-headless-wayland-headless/env.sh
 
 # Inject keyboard shortcuts and text:
 inject "tap f8 100"                 # Eject / Possess in PIE

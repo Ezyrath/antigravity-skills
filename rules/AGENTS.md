@@ -55,7 +55,7 @@ When connected to an Unreal Engine MCP server (e.g. `unreal-mcp`):
 
 - When running the Unreal Engine Editor or graphical tests without disrupting the user's active desktop:
   - **Never use `Xvfb`** (lacks DRI3, causing `vkCreateSwapchainKHR` crashes) or `weston-headless` (lacks real DRM/GBM swapchains, triggering `VK_ERROR_SURFACE_LOST_KHR`).
-  - **Use Headless Sway** via `run_sway_headless.sh` (`WLR_BACKENDS=headless WLR_LIBINPUT_NO_DEVICES=1` on an isolated display socket e.g. `wayland-1`). This utilizes the real DRM render node (`/dev/dri/renderD128`) via wlroots, granting full hardware-accelerated Vulkan (Lumen, Nanite, VSM) at native GPU speed.
+  - **Use Headless Sway** via `run_sway_headless.sh` (`WLR_BACKENDS=headless WLR_LIBINPUT_NO_DEVICES=1` on an isolated display socket e.g. `wayland-headless`). This utilizes the real DRM render node (`/dev/dri/renderD128`) via wlroots, granting full hardware-accelerated Vulkan (Lumen, Nanite, VSM) at native GPU speed.
   - **Input Automation with `wl-inject`** : Drive editor viewport navigation and player pawns by piping commands (`press`, `release`, `drag`, `tap`, `type`) into `/tmp/wl-inject-<display>.fifo`.
   - **Visual Capture** : Capture frames via `grim` or MCP `CaptureEditorImage` and inspect visually using `view_file`.
 
