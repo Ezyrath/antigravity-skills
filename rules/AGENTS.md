@@ -1,8 +1,8 @@
 # ====================================================================
-# UNREAL ENGINE 5 & MODERN C++ AGENT GUIDELINES
+# UNIVERSAL ENGINEERING, UNREAL ENGINE 5, RUST/BEVY & NIXOS GUIDELINES
 # ====================================================================
 
-This ruleset defines universal architectural, coding, and tooling guidelines for AI assistants working on Unreal Engine 5 projects.
+This ruleset defines universal architectural, coding, documentation, and tooling guidelines across all projects (Unreal Engine 5 / C++, Rust / Bevy, NixOS, and general software repositories).
 
 ---
 
@@ -101,4 +101,15 @@ When running inside a NixOS `buildFHSEnv` (`bwrap`) user namespace where `sudo`/
   `sudo python3 ~/.gemini/config/plugins/antigravity-skills/skills/linux-root-bridge/scripts/root_bridge.py`
 - Execute root commands transparently via the Unix socket (`/run/user/<uid>/agy-root-bridge.sock`):
   `python3 ~/.gemini/config/plugins/antigravity-skills/skills/linux-root-bridge/scripts/root_bridge.py --timeout 60 --exec "<command>"`
+
+---
+
+## 9. Documentation & `README.md` Full-File Coherence Pass
+
+Whenever creating or modifying `README.md` or any user-facing documentation file:
+- **Mandatory Full-File Re-Read**: Never rely solely on localized `edit_file` hunks. After applying edits, **always read the entire file from line 1 to the end** before committing or reporting completion.
+- **Zero-Contradiction Audit**: Verify that no earlier or later section (intro summary, badges, Quick Start steps, examples, file lists, or footers) contradicts the updated text — especially regarding:
+  - Support status & stability guarantees (e.g. *stable/tested* vs *preview/experimental/not validated*).
+  - Removed, renamed, or defaulted CLI flags, config keys, paths, and version numbers.
+- **Cross-File Metadata Alignment**: When project scope, supported versions, or CLI options change, verify alignment across `README.md`, CLI `--help` / `usage()`, and package metadata (e.g. `flake.nix` `description`, `Cargo.toml`, `package.json`, `plugin.json`).
 

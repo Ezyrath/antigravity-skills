@@ -5,7 +5,7 @@
 
 A curated collection of modular skills, operational runbooks, and rules for the **Antigravity AI** coding assistant.
 
-This toolkit turns Antigravity into a specialized pair programmer for **Unreal Engine 5**, **C++ development**, **Git/GPG workflows**, and modern simulation architecture.
+This toolkit turns Antigravity into a specialized pair programmer for **Unreal Engine 5 / C++**, **Rust / Bevy & WebAssembly**, **Blender 3D MCP**, **Vue 3 / SpacetimeDB**, **NixOS / Linux tooling**, and **Git/GPG workflows**.
 
 ---
 
@@ -61,6 +61,7 @@ This toolkit turns Antigravity into a specialized pair programmer for **Unreal E
 - Large World Coordinates (LWC 64-bit precision & hierarchical reference frames).
 - Asynchronous multithreading (`TaskGraph`, `ParallelFor`, `AsyncComputeTaskPool`).
 - NixOS FHS sandbox & Host Root Bridge workflow.
+- Mandatory full-file coherence & zero-contradiction audit pass when editing `README.md` and documentation.
 
 ---
 
