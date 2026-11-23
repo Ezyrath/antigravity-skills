@@ -62,6 +62,7 @@ This toolkit turns Antigravity into a specialized pair programmer for **Unreal E
 - Asynchronous multithreading (`TaskGraph`, `ParallelFor`, `AsyncComputeTaskPool`).
 - NixOS FHS sandbox & Host Root Bridge workflow.
 - Mandatory full-file coherence & zero-contradiction audit pass when editing `README.md` and documentation.
+- Clean upgrade hygiene & superseded version cleanup (audit consumers, never silently stack old and new runtime/dependency branches, and surface imperative cleanup commands).
 
 ---
 

@@ -113,3 +113,13 @@ Whenever creating or modifying `README.md` or any user-facing documentation file
   - Removed, renamed, or defaulted CLI flags, config keys, paths, and version numbers.
 - **Cross-File Metadata Alignment**: When project scope, supported versions, or CLI options change, verify alignment across `README.md`, CLI `--help` / `usage()`, and package metadata (e.g. `flake.nix` `description`, `Cargo.toml`, `package.json`, `plugin.json`).
 
+---
+
+## 10. Clean Upgrade Hygiene & Superseded Version Cleanup
+
+Whenever upgrading a dependency, runtime branch, config schema, or toolchain version (e.g. NixOS modules, Flatpak runtimes, Cargo/npm packages, SDKs, or launch flags):
+- **Never Silently Stack Versions**: Do not keep an older branch, runtime, or fallback shim alongside the new one "just in case".
+- **Audit Active Consumers First**:
+  - **Zero active consumers** -> **Replace and clean directly** without asking, and surface any imperative cleanup command needed on the host (e.g. `flatpak uninstall`, stale cache/state removal) when declarative config does not auto-purge disk state.
+  - **Ambiguous or secondary consumer detected** -> **Ask the user explicitly** (*replace vs. keep both*), naming the exact component that still references the older version rather than keeping both by default.
+
