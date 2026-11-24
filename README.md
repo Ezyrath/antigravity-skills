@@ -55,14 +55,20 @@ This toolkit turns Antigravity into a specialized pair programmer for **Unreal E
 - **Helper Scripts**:
   - `scripts/root_bridge.py`: Server & client CLI (`--timeout`, `--cwd`, `--exec`).
 
-### 7. Universal Rules (`rules/AGENTS.md`)
+### 7. `nixos` (Skill)
+- **Post-Update Regression Forensics**: Boot-to-boot timeline correlation (`journalctl --list-boots`) and exact system closure diffs (`nix store diff-closures`).
+- **FHS Sandbox (`bwrap`) Flake Evaluation**: `extendModules` patterns to evaluate full `nixosConfigurations.<host>` closures without host-only `/etc/nixos/facter.json` or SOPS secrets.
+- **CI & Binary Cache Hygiene**: Validation pipeline (`alejandra`, `statix`, `deadnix`, `cspell`/MegaLinter) and bit-for-bit `.outPath` verification for Cachix binary caches.
+- **AM5 Dual-GPU Desktop Runbook**: Mitigating `amdgpu` BACO runtime PM DisplayPort hotplug/wake black screens (`amdgpu.runpm=0`) while preserving Ryzen iGPU `VCN` media offload.
+
+### 8. Universal Rules (`rules/AGENTS.md`)
 - Modern C++ standards for Unreal Engine (`UObject`, `AActor`, `TObjectPtr`, IWYU).
 - Rust, Bevy ECS & WebAssembly Modding guidelines.
 - Large World Coordinates (LWC 64-bit precision & hierarchical reference frames).
 - Asynchronous multithreading (`TaskGraph`, `ParallelFor`, `AsyncComputeTaskPool`).
 - NixOS FHS sandbox & Host Root Bridge workflow.
 - Mandatory full-file coherence & zero-contradiction audit pass when editing `README.md` and documentation.
-- Clean upgrade hygiene & superseded version cleanup (audit consumers, never silently stack old and new runtime/dependency branches, and surface imperative cleanup commands).
+- Clean upgrade hygiene, superseded version cleanup, and avoiding local monkey-patches for non-blocking upstream dependency warnings.
 
 ---
 

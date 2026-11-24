@@ -122,4 +122,5 @@ Whenever upgrading a dependency, runtime branch, config schema, or toolchain ver
 - **Audit Active Consumers First**:
   - **Zero active consumers** -> **Replace and clean directly** without asking, and surface any imperative cleanup command needed on the host (e.g. `flatpak uninstall`, stale cache/state removal) when declarative config does not auto-purge disk state.
   - **Ambiguous or secondary consumer detected** -> **Ask the user explicitly** (*replace vs. keep both*), naming the exact component that still references the older version rather than keeping both by default.
+- **No Local Monkey-Patches for Upstream Warnings**: When a non-blocking deprecation warning originates inside an external third-party dependency or flake input (not the repository's own code) and still has an active backward-compatibility window, do **not** add local overlay shims or workarounds solely to silence the warning (leaving stale debt once upstream updates). Point out the upstream origin and ask before patching locally.
 
